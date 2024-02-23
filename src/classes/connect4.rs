@@ -195,9 +195,13 @@ impl Connect4 {
             println!("{}", self.message);
             return;
         }
-        
-        if self.apply_play(_col) 
-            { self.attempt_turn_message(); }
+
+        if self.apply_play(_col) {
+            self.attempt_turn_message(); 
+        } else {
+            return;
+        }
+            
         
         if self.check_grid() {
             self.win_message();
