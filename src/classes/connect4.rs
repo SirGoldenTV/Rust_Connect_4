@@ -3,9 +3,7 @@ pub struct Connect4 {
     player : u8,
     grid : [[u8;7];6],
     pub finish : bool,
-    message : String,
-    i_last_play : usize,
-    j_last_play : usize
+    message : String
 }
 
 impl Connect4 {
@@ -20,10 +18,7 @@ impl Connect4 {
         }
         let finish = false;
         let message = String::new();
-        let i_last_play : usize = 0;
-        let j_last_play : usize = 0;
-
-        Connect4 {player, grid, finish, message, i_last_play, j_last_play}
+        Connect4 {player, grid, finish, message}
 
     }
 
@@ -42,7 +37,7 @@ impl Connect4 {
     /// # Arguments
     ///
     /// * `_line` - La ligne à vérifier.
-    pub fn check_win_line(&self, _line : u8) -> bool {
+    fn check_win_line(&self, _line : u8) -> bool {
         return self.grid[usize::from(_line)].windows(4).any(|window| {
             window.iter().all(|&num| num == window[0] && num != 0)
         });
@@ -53,41 +48,11 @@ impl Connect4 {
     /// # Arguments
     ///
     /// * `_column` - La colonne à vérifier.
-    pub fn check_win_column(&self, _column : u8) -> bool {
+    fn check_win_column(&self, _column : u8) -> bool {
         return self.grid.windows(4).any(|window| {
             window.iter().all(|row| row[usize::from(_column)] == window[0][usize::from(_column)] && row[usize::from(_column)] != 0 )
         });
     }
-
-    /// Cette fonction vérifie si une diagonale ascendante contient 4 pions à la suite de la même couleur.
-    ///
-    /// # Arguments
-    ///
-    /// * `_start_row` - L'indice de la ligne de départ.
-    /// * `_start_col` - L'indice de la colonne de départ.
-    // pub fn check_win_diagonal_asc_left(&self, _start_row: usize, _start_col: usize) -> bool {
-    //     let mut diagonal = Vec::with_capacity(4);
-        
-    //     for _i in 0..4 {
-    //         let row = _start_row.checked_sub(_i);
-    //         let col = _start_col.checked_sub(_i);
-            
-    //         if let (Some(r), Some(c)) = (row, col) {
-    //             if r > self.grid.len() - 1 || c > self.grid[0].len() - 1 {
-    //                 return false
-    //             }
-    //             diagonal.push(self.grid[r][c]);
-    //         } else {
-    //             return false; // Hors limites de la grille
-    //         }
-    //     }
-
-    //     if diagonal.iter().count() < 4 
-    //     {
-    //         return false;
-    //     }
-    //     diagonal.iter().all(|&num| num == diagonal[0] && num != 0)
-    // }
 
     /// Cette fonction vérifie si une diagonale descendante contient 4 pions à la suite de la même couleur.
     ///
@@ -95,7 +60,7 @@ impl Connect4 {
     ///
     /// * `_start_row` - L'indice de la ligne de départ.
     /// * `_start_col` - L'indice de la colonne de départ.
-    pub fn check_win_diagonal_desc_left(&self, _start_row: usize, _start_col: usize) -> bool {
+    fn check_win_diagonal_desc_left(&self, _start_row: usize, _start_col: usize) -> bool {
         let mut diagonal = Vec::with_capacity(4);
         
         for _i in 0..4 {
@@ -120,42 +85,13 @@ impl Connect4 {
         diagonal.iter().all(|&num| num == diagonal[0] && num != 0)
     }
 
-    /// Cette fonction vérifie si une diagonale ascendante contient 4 pions à la suite de la même couleur.
-    ///
-    /// # Arguments
-    ///
-    /// * `_start_row` - L'indice de la ligne de départ.
-    /// * `_start_col` - L'indice de la colonne de départ.
-    // pub fn check_win_diagonal_asc_right(&self, _start_row: usize, _start_col: usize) -> bool {
-    //     let mut diagonal = Vec::with_capacity(4);
-        
-    //     for _i in 0..4 {
-    //         let row = _start_row.checked_sub(_i);
-    //         let col = _start_col.checked_add(_i);
-            
-    //         if let (Some(r), Some(c)) = (row, col) {
-    //             if r > self.grid.len() - 1 || c > self.grid[0].len() - 1 {
-    //                 return false
-    //             }
-    //             diagonal.push(self.grid[r][c]);
-    //         } else {
-    //             return false; // Hors limites de la grille
-    //         }
-    //     }
-    //     if diagonal.iter().count() < 4 
-    //     {
-    //         return false;
-    //     }
-    //     diagonal.iter().all(|&num| num == diagonal[0] && num != 0)
-    // }
-
     /// Cette fonction vérifie si une diagonale descendante contient 4 pions à la suite de la même couleur.
     ///
     /// # Arguments
     ///
     /// * `_start_row` - L'indice de la ligne de départ.
     /// * `_start_col` - L'indice de la colonne de départ.
-    pub fn check_win_diagonal_desc_right(&self, _start_row: usize, _start_col: usize) -> bool {
+    fn check_win_diagonal_desc_right(&self, _start_row: usize, _start_col: usize) -> bool {
         let mut diagonal = Vec::with_capacity(4);
         
         for _i in 0..4 {
@@ -185,7 +121,7 @@ impl Connect4 {
     /// # Arguments
     ///
     /// * `_col` - La colonne à vérifier.
-    pub fn check_column_full(&self, _col : usize) -> bool {
+    fn check_column_full(&self, _col : usize) -> bool {
         self.grid[0][_col] != 0
     }
 
@@ -200,21 +136,16 @@ impl Connect4 {
             }
         }
 
+        // Return true si on trouve une diagonale qui possède 4 de suite.
         for i in 0..self.grid.len() {
-            for j in 0..self.grid[0].len() {
-                // let temp_1 = self.check_win_diagonal_asc_left(i,j) ;
-                let temp_2 = self.check_win_diagonal_desc_left(i,j) ;
-                // let temp_3 = self.check_win_diagonal_asc_right(i,j);
-                let temp_4 = self.check_win_diagonal_desc_right(i,j);
-                
-                if temp_2
-                || temp_4 {
+            for j in 0..self.grid[0].len() {                
+                if self.check_win_diagonal_desc_left(i,j)
+                || self.check_win_diagonal_desc_right(i,j) {
                     return true;
                 }
             }
         
         }
-
         return false;
     }
 
@@ -229,8 +160,6 @@ impl Connect4 {
         if !self.check_column_full(_attempt) {
             let last_index = self.get_last_index(_attempt); // Permet d'obtenir le dernier élément vide dans la grille.
             self.grid[last_index][_attempt] = self.player;
-            self.i_last_play = last_index;
-            self.j_last_play = _attempt;
             return true;
         } else { self.column_full_message() }
         false
@@ -266,9 +195,7 @@ impl Connect4 {
             println!("{}", self.message);
             return;
         }
-
         
-
         if self.apply_play(_col) 
             { self.attempt_turn_message(); }
         
