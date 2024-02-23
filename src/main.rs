@@ -5,12 +5,13 @@ use std::io;
 
 fn main() {
     loop {
+        println!("-----------------------------------------------------");
         println!("Hello, World! New Grid.");
         let mut _game = Connect4::new();
         let mut _input = String::new(); 
         
     
-        while !_game.finish {
+        while _input.trim() != "exit"{
             _input.clear();
             _game.show();
             println!("Please enter a number corresponding to a column, or \"exit\" to end the grid:");
